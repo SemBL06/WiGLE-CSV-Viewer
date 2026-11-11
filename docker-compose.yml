@@ -1,0 +1,18 @@
+services:
+  wigleviewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wigleviewer
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      PORT: "5173"
+      # Only set TRUST_PROXY=1 when running behind a trusted reverse proxy.
+      TRUST_PROXY: "${TRUST_PROXY:-0}"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5173/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
